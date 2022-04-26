@@ -10,7 +10,7 @@
 
 1. `npm i -D next-with-rrd` or `yarn add -D next-with-rrd`
 2. watching
-   1. `npx next-with-rrd` or `yarn next-with-rrd`
+    1. `npx next-with-rrd` or `yarn next-with-rrd`
 
 # setup
 
@@ -36,7 +36,7 @@
 
 ```tsx
 import React from "react";
-import {useRoutes} from "react-router";
+import {useRoutes} from "react-router-dom";
 import TestSrcIndex from "/test/src/index";
 import TestSrcPost from "/test/src/post";
 import TestSrcPostId from "/test/src/post/:id";
@@ -44,6 +44,7 @@ import TestSrcPostShow from "/test/src/post/show";
 import TestSrcProductId from "/test/src/product/:id";
 import TestSrcProfile from "/test/src/profile";
 
+// eslint-disable-next-line
 export default () =>
     useRoutes([
         {path: "", element: <TestSrcIndex/>},
@@ -62,6 +63,7 @@ export default () =>
         {path: "profile", element: <TestSrcProfile/>},
     ]);
 
+
 ```
 
 ## using
@@ -69,15 +71,14 @@ export default () =>
 生成的路由文件可以直接在代码中这样使用:
 
    ```tsx
-   import {HashRouter, Routes} from "react-router-dom";
-import GenRoutes from "example/genRoute";
-import {Route} from "react-router";
-
-const App = () =>
-    <HashRouter>
-        <Routes>
-            <GenRoutes/>
-            <Route path={"*"} element={<>404 Not Found</>}/>
-        </Routes>
-    </HashRouter>
+   import {HashRouter, Routes, Route} from "react-router-dom";
+   import GenRoutes from "example/genRoute";
+   
+   const App = () =>
+       <HashRouter>
+           <Routes>
+               <GenRoutes/>
+               <Route path={"*"} element={<>404 Not Found</>}/>
+           </Routes>
+       </HashRouter>
    ```

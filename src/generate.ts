@@ -32,7 +32,7 @@ async function scan(startDir: string) {
 }
 
 async function generate(startDir: string) {
-    let tpl = `import React from "react";import {useRoutes} from "react-router";`;
+    let tpl = `import React from "react";import {useRoutes} from "react-router-dom";`;
 
 
     async function genRoute(obj: { [keys: string]: any }) {
@@ -65,7 +65,7 @@ async function generate(startDir: string) {
     // console.log(x)
     const routes = await genRoute(x);
 
-    tpl += `\n// eslint-disable-next-line\n export default () => useRoutes([${routes}]);\n`;
+    tpl += `\n\n// eslint-disable-next-line\n export default () => useRoutes([${routes}]);\n`;
     // tpl += 'export default Routes;';
     return prettier.format(tpl, {parser: 'babel'});
 }
