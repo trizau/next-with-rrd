@@ -65,7 +65,7 @@ async function generate(startDir: string) {
     // console.log(x)
     const routes = await genRoute(x);
 
-    tpl += `\n\n export default () => useRoutes([${routes}]);\n`;
+    tpl += `\n// eslint-disable-next-line\n export default () => useRoutes([${routes}]);\n`;
     // tpl += 'export default Routes;';
     return prettier.format(tpl, {parser: 'babel'});
 }
