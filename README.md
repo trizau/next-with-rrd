@@ -98,7 +98,7 @@ export default () =>
 
 ```tsx
 import {HashRouter, Routes, Route} from "react-router-dom";
-import GenRoutes from "example/GenRoute";
+import GenRoutes from "/example/GenRoute";
 
 const App = () =>
     <HashRouter>

@@ -17,7 +17,12 @@ async function scan(startDir: string) {
         if (fs.statSync(_item).isFile())
             if (!item.endsWith('.jsx') && !item.endsWith('.tsx')) continue;
 
-        let path = item.toLowerCase().replace(/\.\w*$/, '').replace(/\$/g, ':').replace(/_/g, '/'); // 路由地址
+        // 路由地址
+        let path = item.toLowerCase()
+            .replace(/\.\w*$/, '')
+            .replace(/\$/g, ':')
+            .replace(/:/g, '/:')
+            .replace(/^\/:/, ':');
         path = path == 'index' ? '' : path == '404' ? '*' : path;
 
         if (!route[path]) { // 作为引入的文件路径
