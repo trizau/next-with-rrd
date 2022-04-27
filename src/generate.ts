@@ -1,6 +1,12 @@
 import fs from "fs";
 import prettier from "prettier";
 
+function formatComponentName(name: string) {
+    return name.replace(/\.\w*$/, '')
+        .replace(/\W+\w/g, (match) => match.slice(-1).toUpperCase())
+        .replace(/^\w/, (match) => match.toUpperCase());
+}
+
 async function scan(startDir: string) {
     const route: any = {};
     for (const item of fs.readdirSync(startDir)) {
@@ -11,21 +17,29 @@ async function scan(startDir: string) {
         if (fs.statSync(_item).isFile())
             if (!item.endsWith('.jsx') && !item.endsWith('.tsx')) continue;
 
-        const path = item.replace(/\..*$/, ''); // 路由地址
-        if (!route[path]) {
-            // 作为引入的文件路径
-            route[path] = {filepath: _item.replace(/\..*$/, '')};
+        let path = item.toLowerCase().replace(/\.\w*$/, '').replace(/\$/g, ':').replace(/_/g, '/'); // 路由地址
+        path = path == 'index' ? '' : path == '404' ? '*' : path;
+
+        if (!route[path]) { // 作为引入的文件路径
+            route[path] = {filepath: _item.replace(/\.\w*$/, '')};
         }
 
         if (fs.statSync(_item).isFile()) {
             // 组件
-            route[path].element = _item
-                .replace(/\..*$/, '')
-                .replace(/\W+\w/g, (match) => match.slice(-1).toUpperCase())
-                .replace(/^\w/, (match) => match.toUpperCase());
+            route[path].element = formatComponentName(_item);
         } else {
             // 子组件
             route[path].children = await scan(_item);
+
+
+            // 如果入口文件只存放于文件夹内
+            if (!fs.existsSync(_item + '.jsx') && !fs.existsSync(_item + '.tsx')) {
+                const index = _item + '/index';
+                if (fs.existsSync(index + '.jsx') || fs.existsSync(index + '.tsx')) {
+                    route[path].element = formatComponentName(index);
+                    delete route[path].children[''];
+                }
+            }
         }
     }
     return route;
@@ -39,22 +53,21 @@ async function generate(startDir: string) {
         let r = '';
         for (const [path, route] of Object.entries(obj)) {
             if (route.element) {
+                // route.element += '___' + randStr();
                 tpl += `import ${route.element} from "/${route.filepath}";`;
             }
-
-            const _path = path == 'index' ? '' : path;
 
             if (obj[path].children && Object.keys(obj[path].children).length) {
                 // console.log(obj[path].children)
                 const children = await genRoute(obj[path].children)
                 if (route.element) {
-                    r += `{path: '${_path}', element: <${route.element}/>, children: [${children}]},`;
+                    r += `{path: '${path}', element: <${route.element}/>, children: [${children}]},`;
                 } else {
-                    r += `{path: '${_path}', children: [${children}]},`;
+                    r += `{path: '${path}', children: [${children}]},`;
                 }
             } else {
                 if (route.element) {
-                    r += `{path: '${_path}', element: <${route.element}/>},`;
+                    r += `{path: '${path}', element: <${route.element}/>},`;
                 }
             }
         }

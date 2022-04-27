@@ -23,6 +23,7 @@ Object.entries(config).map(async ([baseDir, distFile]) => {
 
     if (fs.existsSync(baseDir) && fs.statSync(baseDir).isDirectory()) {
         fs.writeFileSync(distFile, await generate(baseDir));
+        console.log('next-with-rrd watching: ' + baseDir + '; to: ' + distFile);
 
         fs.watch(baseDir, {recursive: true}, async (event) => {
             if (event == 'rename') {
