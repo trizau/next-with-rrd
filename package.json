@@ -1,6 +1,6 @@
 {
   "name": "next-with-rrd",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "engines": {
@@ -37,10 +37,11 @@
     "parcel": "^2.5.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "typescript": ">=3.0.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "typescript": ">=3.0.0"
   },
   "dependencies": {
+    "node-watch": "^0.7.3",
     "prettier": "^2.6.2"
   }
 }
